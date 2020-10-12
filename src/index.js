@@ -5,11 +5,19 @@ import * as serviceWorker from "./serviceWorker";
 import axios from "axios";
 import reducers from "./reducers";
 import { Provider } from "react-redux";
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
+// this responseable for creating the saga middleware
+import createSagaMiddleware from "redux-saga";
+import rootSaga from "./sagas";
+
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "http://rem-rest-api.herokuapp.com/api/users";
 
-const store = createStore(reducers);
+const store = createStore(reducers, applyMiddleware(sagaMiddleware));
+
+sagaMiddleware.run(rootSaga);
+
+const sagaMiddleware = createSagaMiddleware();
 
 ReactDOM.render(
   <React.StrictMode>
