@@ -1,7 +1,7 @@
 import React from "react";
 import { Component } from "react";
 import { connect } from "react-redux";
-import { getUsersRequest } from "../actions/users";
+import { getUsersRequest, createUserRequest } from "../actions/users";
 import UsersList from "./UsersList";
 import NewUSerForm from "./NewUserForm";
 class App extends Component {
@@ -10,7 +10,7 @@ class App extends Component {
     this.props.getUsersRequest();
   }
   handleSubmit = ({ firstName, lastName }) => {
-    console.log(firstName, lastName);
+    this.props.createUserRequest({ firstName, lastName });
   };
   render() {
     const users = this.props.users;
@@ -25,4 +25,5 @@ class App extends Component {
 
 export default connect(({ users }) => ({ users }), {
   getUsersRequest,
+  createUserRequest,
 })(App);

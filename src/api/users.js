@@ -1,9 +1,8 @@
 import axios from "axios";
 
-
-// create exported class to retturn all users 
-// with axios i can access this rest api and 
-// get all data into 
+// create exported class to retturn all users
+// with axios i can access this rest api and
+// get all data into
 // put what about params and why i set limit 1000
 // because i have no access on this api so i have to
 // use limit 🛩
@@ -13,5 +12,13 @@ export const getUsers = () => {
     params: {
       limit: 1000,
     },
+  });
+};
+
+export const createUser = ({ firstName, lastName }) => {
+  console.log(firstName, lastName);
+  return axios.post("/users", {
+    firstName,
+    lastName,
   });
 };

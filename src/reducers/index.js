@@ -17,7 +17,6 @@
 
 import { combineReducers } from "redux";
 import UsersReducer from "./users";
-console.log(UsersReducer)
 export default combineReducers({
   users: UsersReducer,
 });
