@@ -6,13 +6,18 @@
 /// to get process from a process and another one & another one
 // and when any process have an error dont effect in other forks
 /// to understand read line: 23 24
-import { takeEvery, call, fork } from "redux-saga/effects";
+// put is just like copy data and paste into value parameter
+import { takeEvery, call, fork, put } from "redux-saga/effects";
 import * as actions from "../actions/users";
 import * as api from "../api/users";
 function* getUsers() {
   try {
     const result = yield call(api.getUsers);
-    console.log(result);
+    yield put(
+      actions.getUsersSuccess({
+        items: result.data.data,
+      })
+    );
   } catch (err) {}
 }
 
