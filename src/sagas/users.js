@@ -1,44 +1,67 @@
-/// takeEvey to get all data into yield which generatied by yield
-/// call is allow us to call a promise to wait data to fetch
-/// {fork lets discuss if we have a main progress if we fork from it
-/// we get a child of this process which ew fork from it
-/// and we can call it from and procss the main use or why i use it
-/// to get process from a process and another one & another one
-// and when any process have an error dont effect in other forks
-/// to understand read line: 23 24
-// put is just like copy data and paste into value parameter
-import { takeLatest, takeEvery, call, fork, put } from "redux-saga/effects";
-import * as actions from "../actions/users";
-import * as api from "../api/users";
-function* getUsers() {
-  try {
-    const result = yield call(api.getUsers);
-    yield put(
-      actions.getUsersSuccess({
-        items: result.data.data,
-      })
-    );
-  } catch (err) {}
+import {takeEvery, takeLatest, take, call, put, fork} from 'redux-saga/effects';
+import * as actions from '../actions/users';
+import * as api from '../api/users';
+
+function* getUsers(){
+	try{
+		const result = yield call(api.getUsers);
+		yield put(actions.getUsersSuccess({
+			items: result.data.data
+		}));
+	}catch(e){
+        yield put(actions.usersError({
+            error: 'An error occurred when trying to get the users'
+        }));
+	}
 }
 
-function* watchGetUsersRequest() {
-  yield takeEvery(actions.Types.GET_USERS_REQUEST, getUsers);
+function* watchGetUsersRequest(){
+	yield takeEvery(actions.Types.GET_USERS_REQUEST, getUsers);
 }
 
-function* createUser(action) {
-  try {
-    yield call(api.createUser, {
-      firstName: action.payload.firstName,
-      lastName: action.payload.lastName,
-    });
-    //update state
-    yield call(getUsers);
-  } catch (e) {}
+function* deleteUser(userId){
+    try{
+        yield call(api.deleteUser, userId);
+
+        yield call(getUsers);
+    }catch(e){
+        yield put(actions.usersError({
+            error: 'An error occurred when trying to delete the user'
+        }));
+	}
 }
 
-function* watchCreateUserRequest() {
-  yield takeLatest(actions.Types.CREATE_USER_REQUEST, createUser);
+function* watchDeleteUserRequest(){
+    while(true){
+        const {payload} = yield take(actions.Types.DELETE_USER_REQUEST);
+        yield call(deleteUser, payload.userId);
+    }
 }
 
-const usersSagas = [fork(watchGetUsersRequest), fork(watchCreateUserRequest)];
-export default usersSagas;
+function* createUser({payload}){
+    try{
+        yield call(api.createUser, {
+            firstName: payload.firstName,
+            lastName: payload.lastName
+        });
+
+        yield call(getUsers);
+
+    }catch(e){
+        yield put(actions.usersError({
+            error: 'An error occurred when trying to create the user'
+        }));
+    }
+}
+
+function* watchCreateUserRequest(){
+    yield takeLatest(actions.Types.CREATE_USER_REQUEST, createUser);
+}
+
+const userSagas = [
+	fork(watchGetUsersRequest),
+	fork(watchDeleteUserRequest),
+	fork(watchCreateUserRequest)
+];
+
+export default userSagas;
