@@ -7,6 +7,7 @@ import { createStore, applyMiddleware } from "redux";
 import axios from "axios";
 import createSagaMiddleware from "redux-saga";
 import rootSaga from "./sagas";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const sagaMiddleware = createSagaMiddleware();
 

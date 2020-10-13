@@ -16,7 +16,7 @@ function* getUsers() {
     yield put(
       actions.getUsersSuccess({
         items: result.data.data,
-      })
+      }) 
     );
   } catch (err) {}
 }

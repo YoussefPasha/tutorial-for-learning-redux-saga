@@ -1,5 +1,3 @@
-import { act } from "react-dom/test-utils";
-
 // get heada class action types (request to get user and send user in success)
 import { Types } from "../actions/users";
 
